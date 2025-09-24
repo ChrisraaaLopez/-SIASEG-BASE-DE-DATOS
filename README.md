@@ -29,7 +29,7 @@ Incluye:
    ```bash
    \i ./scripts/init_siaseg.sql
    ```
-4. 
+4. Confirmar la creación de las tablas ejecutando:
   ```bash
    \dt
    ```
