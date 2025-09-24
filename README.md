@@ -30,10 +30,9 @@ Incluye:
    \i ./scripts/init_siaseg.sql
    ```
 4. Confirmar la creación de las tablas ejecutando:
-  ```bash
-   \dt
+   ```bash
+   \i ./scripts/init_siaseg.sql
    ```
-
 ## Actualizaciones
 
 ### Responsables
