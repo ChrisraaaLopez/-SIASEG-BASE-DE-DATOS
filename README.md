@@ -47,7 +47,7 @@ Incluye:
 - Se aplican claves primarias, foráneas e índices en campos de alta consulta.
 
 
-## Responsables
+## 👥 Responsables
 - Christian Israel Lopez Lopez
 - Jonathan Alejandro Gutierrez Gallardo
 - Angel Jayr Velazquez Escobedo
