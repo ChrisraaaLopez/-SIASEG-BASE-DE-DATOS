@@ -15,7 +15,7 @@ Incluye:
   - 
   - 
 
-## Instrucciones de Uso
+## 🚀Instrucciones de Uso
 1. Clonar el repositorio:
    ```bash
    git clone https://empresa.com/repositorios/siaseg-base-datos.git
@@ -33,6 +33,12 @@ Incluye:
    ```bash
    \i ./scripts/init_siaseg.sql
    ```
-## Actualizaciones
 
-### Responsables
+## Responsables
+- Christian Israel Lopez Lopez
+- Jonathan Alejandro Gutierrez Gallardo
+- Angel Jair Velazquez Escobedo
+- Osvaldo Martinez Gallegos
+- Brandon Alexis Chavez Santoyo
+- Carlos Alberto Diaz Atilano
+
