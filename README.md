@@ -34,6 +34,19 @@ Incluye:
    \i ./scripts/init_siaseg.sql
    ```
 
+## 🏗️ Estructura de la Base de Datos
+
+### Tablas principales
+
+
+### Relaciones
+
+
+### Normalización
+- La base se encuentra normalizada a 3FN para garantizar consistencia.
+- Se aplican claves primarias, foráneas e índices en campos de alta consulta.
+
+
 ## Responsables
 - Christian Israel Lopez Lopez
 - Jonathan Alejandro Gutierrez Gallardo
