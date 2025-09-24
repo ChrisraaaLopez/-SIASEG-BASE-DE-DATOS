@@ -16,7 +16,23 @@ Incluye:
   - 
 
 ## Instrucciones de Uso
-
+1. Clonar el repositorio:
+   ```bash
+   git clone https://empresa.com/repositorios/siaseg-base-datos.git
+   cd siaseg-base-datos
+   ```
+2. Conectarse al servidor de base de datos:
+   ```bash
+   psql -U usuario -h localhost -d postgres
+   ```
+3. Ejecutar el script principal de inicialización:
+   ```bash
+   \i ./scripts/init_siaseg.sql
+   ```
+4. 
+  ```bash
+   \dt
+   ```
 ## Actualizaciones
 
 ### Responsables
