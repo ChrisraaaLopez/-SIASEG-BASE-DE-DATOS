@@ -37,7 +37,7 @@ Incluye:
 ## Responsables
 - Christian Israel Lopez Lopez
 - Jonathan Alejandro Gutierrez Gallardo
-- Angel Jair Velazquez Escobedo
+- Angel Jayr Velazquez Escobedo
 - Osvaldo Martinez Gallegos
 - Brandon Alexis Chavez Santoyo
 - Carlos Alberto Diaz Atilano
