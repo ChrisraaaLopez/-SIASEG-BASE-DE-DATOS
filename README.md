@@ -6,6 +6,15 @@
 ---
 
 ## 🗄️ Tablas principales
+
+### `roles`
+- id_rol INT PRIMARY KEY AUTO_INCREMENT
+- nombre_rol VARCHAR(50) NOT NULL
+- descripcion TEXT
+- fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP
+- fecha_actualizacion DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+- status ENUM('Activo','Inactivo') DEFAULT 'Activo'
+
 ### `empleados`
 - id_empleado INT PRIMARY KEY AUTO_INCREMENT
 - nombres VARCHAR(100) NOT NULL
@@ -31,17 +40,40 @@
 - tolerancia_minutos INT DEFAULT 0
 - fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP
 - fecha_actualizacion DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-- status ENUM('Activo','Inactivo') DEFAULT 'Activo
-
+- status ENUM('Activo','Inactivo') DEFAULT 'Activo'
 
 ### `estaciones`
-- (lista de campos)
+- id_estacion INT PRIMARY KEY AUTO_INCREMENT
+- nombre_estacion VARCHAR(50) NOT NULL
+- codigo_estacion VARCHAR(10)
+- ubicacion VARCHAR(100)
+- descripcion TEXT
+- fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP
+- fecha_actualizacion DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+- status ENUM('Activo','Inactivo') DEFAULT 'Activo'
 
 ### `asistencias`
-- (lista de campos)
+- id_asistencia INT PRIMARY KEY AUTO_INCREMENT,
+- empleado_id INT NOT NULL,
+- turno_id INT NOT NULL,
+- estacion_id INT NOT NULL,
+- fecha_registro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+- status ENUM('A tiempo','Tarde','Falta') NOT NULL,
+- comentario TEXT,
+- fecha_actualizacion DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+- (empleado_id) REFERENCES empleados(id),
+- (turno_id) → turnos(id),
+- (estacion_id) → estaciones(id)
 
 ### `logs`
-- (lista de campos)
+- id_log INT PRIMARY KEY AUTO_INCREMENT
+- empleado_id INT
+- accion VARCHAR(80) NOT NULL
+- fecha_accion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+- descripcion TEXT
+- fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP
+- fecha_actualizacion DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+- FOREIGN KEY (empleado_id) REFERENCES empleados(id)
 
 ---
 
