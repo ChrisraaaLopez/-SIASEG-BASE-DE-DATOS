@@ -1,7 +1,16 @@
 # 📌 Base de Datos – Sistema de Asistencias
 
 ## 📖 Descripción
-(Explica brevemente el objetivo del sistema y qué hace la BD)
+La base de datos SIASEG está diseñada para gestionar el control de empleados, roles, asistencias y estaciones de trabajo en una organización.
+Incluye:
+
+* Gestión de empleados, con datos personales, credenciales y rol asignado.
+* Gestión de roles, como Admin, RH o Empleado, con posibilidad de activarlos o desactivarlos.
+* Registro de asistencias, relacionando empleados con turnos y estaciones, incluyendo estado de puntualidad.
+* Control de estaciones de trabajo, donde se registran las actividades y asistencias.
+* Logs de acciones para auditar operaciones realizadas por los empleados.
+
+💡 Está pensada para facilitar la administración del personal y mantener un historial de asistencia y actividad seguro y organizado.
 
 ---
 
