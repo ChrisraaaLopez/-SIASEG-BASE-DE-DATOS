@@ -1,57 +1,57 @@
-# -SIASEG-BASE-DE-DATOS
-Base de Datos para el software SIASEG
+# 📌 Base de Datos – Sistema de Asistencias
 
-## 📖 Descripcion
-Este repositorio contiene los scripts SQL necesarios para la **creación, configuración y mantenimiento** de la base de datos del sistema SIASEG.  
-Incluye:
-- Creación de tablas, vistas, índices y relaciones.
-- Carga de datos iniciales (catálogos y configuraciones básicas).
-- Scripts de migraciones para mantener la base actualizada.
-  
-## ⚙️ Requisitos
-- **Motor de base de datos:** PostgreSQL 15  
-- **Usuario con permisos:** `CREATE`, `ALTER`, `INSERT`, `UPDATE`, `DELETE`  
-- Herramientas recomendadas:  
-  - 
-  - 
+## 📖 Descripción
+(Explica brevemente el objetivo del sistema y qué hace la BD)
 
-## 🚀Instrucciones de Uso
-1. Clonar el repositorio:
-   ```bash
-   git clone https://empresa.com/repositorios/siaseg-base-datos.git
-   cd siaseg-base-datos
-   ```
-2. Conectarse al servidor de base de datos:
-   ```bash
-   psql -U usuario -h localhost -d postgres
-   ```
-3. Ejecutar el script principal de inicialización:
-   ```bash
-   \i ./scripts/init_siaseg.sql
-   ```
-4. Confirmar la creación de las tablas ejecutando:
-   ```bash
-   \i ./scripts/init_siaseg.sql
-   ```
+---
 
-## 🏗️ Estructura de la Base de Datos
+## 🗄️ Tablas principales
+### `empleados`
+- (lista de campos)
 
-### Tablas principales
+### `turnos`
+- (lista de campos)
 
+### `estaciones`
+- (lista de campos)
 
-### Relaciones
+### `asistencias`
+- (lista de campos)
 
+### `logs`
+- (lista de campos)
 
-### Normalización
-- La base se encuentra normalizada a 3FN para garantizar consistencia.
-- Se aplican claves primarias, foráneas e índices en campos de alta consulta.
+---
 
+## ⚙️ Procedimientos almacenados
 
-## 👥 Responsables
-- Christian Israel Lopez Lopez
-- Jonathan Alejandro Gutierrez Gallardo
-- Angel Jayr Velazquez Escobedo
-- Osvaldo Martinez Gallegos
-- Brandon Alexis Chavez Santoyo
-- Carlos Alberto Diaz Atilano
+### 🔹 `registrar_empleado`
+**Descripción:**  
+**Parámetros:**  
+**Ejemplo de uso:**  
 
+### 🔹 `login_empleado`
+**Descripción:**  
+**Parámetros:**  
+**Ejemplo de uso:**  
+
+(Otro procedure si aplica…)
+
+---
+
+## 👀 Vista disponible
+### `vista_asistencias`
+(Describe qué muestra la vista)
+
+---
+
+## 🔑 Usuarios y permisos
+(Nombre del usuario de conexión, permisos que tiene, restricciones, etc.)
+
+---
+
+## 🚀 Instrucciones de uso
+1. (Importar estructura)  
+2. (Insertar datos de prueba)  
+3. (Crear procedures y vistas)  
+4. (Conectar desde la app web con el usuario correspondiente)  
