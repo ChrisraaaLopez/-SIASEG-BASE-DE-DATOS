@@ -7,10 +7,32 @@
 
 ## 🗄️ Tablas principales
 ### `empleados`
-- (lista de campos)
+- id_empleado INT PRIMARY KEY AUTO_INCREMENT
+- nombres VARCHAR(100) NOT NULL
+- apellidos VARCHAR(100) NOT NULL
+- CURP VARCHAR(18) NOT NULL UNIQUE
+- RFC VARCHAR(13) NOT NULL UNIQUE
+- telefono VARCHAR(15)
+- fotografia VARCHAR(255)
+- username VARCHAR(30) NOT NULL UNIQUE
+- password VARCHAR(65) NOT NULL
+- rol_id INT
+- fecha_ingreso DATE NOT NULL
+- fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP
+- fecha_actualizacion DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+- status ENUM('Activo','Inactivo') DEFAULT 'Activo'
+- (rol_id) → roles(id_rol)
 
 ### `turnos`
-- (lista de campos)
+- id_turno INT PRIMARY KEY AUTO_INCREMENT
+- nombre_turno VARCHAR(50) NOT NULL
+- hora_entrada TIME NOT NULL
+- hora_salida TIME
+- tolerancia_minutos INT DEFAULT 0
+- fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP
+- fecha_actualizacion DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+- status ENUM('Activo','Inactivo') DEFAULT 'Activo
+
 
 ### `estaciones`
 - (lista de campos)
