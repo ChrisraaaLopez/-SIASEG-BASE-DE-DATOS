@@ -1,8 +1,25 @@
+-- =====================================
+-- Crea esta tabla nueva pai
+-- =====================================
+CREATE TABLE IF NOT EXISTS asistencias_backup (
+    id_asistencia INT,
+    empleado_id INT,
+    turno_id INT,
+    estacion_id INT,
+    zona_id INT,
+    fecha_registro DATETIME,
+    status ENUM('A tiempo','Tarde','Falta'),
+    comentario TEXT,
+    fecha_actualizacion DATETIME
+);
 
+-- =====================================
+-- Crud de asistencias
+-- =====================================
 DELIMITER $$
 
 CREATE PROCEDURE p_asistencias_crud(
-    IN p_accion VARCHAR(10),
+    IN p_accion VARCHAR(15),
     IN p_id_asistencia INT,
     IN p_empleado_id INT,
     IN p_turno_id INT,
@@ -16,13 +33,8 @@ BEGIN
     -- Insertar
     -- =====================================
     IF p_accion = 'INSERT' THEN
-        INSERT INTO asistencias (
-            empleado_id, turno_id, estacion_id, zona_id,
-            status, comentario
-        ) VALUES (
-            p_empleado_id, p_turno_id, p_estacion_id, p_zona_id,
-            p_status, p_comentario
-        );
+        INSERT INTO asistencias (empleado_id, turno_id, estacion_id, zona_id, status, comentario)
+        VALUES (p_empleado_id, p_turno_id, p_estacion_id, p_zona_id, p_status, p_comentario);
 
     -- =====================================
     -- Modificar
@@ -39,10 +51,20 @@ BEGIN
         WHERE id_asistencia = p_id_asistencia;
 
     -- =====================================
-    -- Borrar con el id
+    -- Borrar pero manda un repaldo para la tabla nueva que esta arriba
     -- =====================================
     ELSEIF p_accion = 'DELETE' THEN
+        INSERT INTO asistencias_backup
+        SELECT * FROM asistencias WHERE id_asistencia = p_id_asistencia;
         DELETE FROM asistencias WHERE id_asistencia = p_id_asistencia;
+
+    -- =====================================
+    -- Restaurar
+    -- =====================================
+    ELSEIF p_accion = 'RESTORE' THEN
+        INSERT INTO asistencias
+        SELECT * FROM asistencias_backup WHERE id_asistencia = p_id_asistencia;
+        DELETE FROM asistencias_backup WHERE id_asistencia = p_id_asistencia;
     END IF;
 END$$
 
