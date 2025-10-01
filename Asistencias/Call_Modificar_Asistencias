@@ -1,0 +1,10 @@
+CALL p_asistencias_crud(
+    'UPDATE',
+    3,             -- id_asistencia a modificar
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    'Tarde',
+    'Se retrasó por tráfico'
+);
