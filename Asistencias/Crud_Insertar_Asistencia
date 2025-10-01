@@ -1,0 +1,10 @@
+CALL p_asistencias_crud(
+    'INSERT',
+    NULL,          -- id_asistencia autoincrement
+    1,             -- empleado_id
+    2,             -- turno_id
+    3,             -- estacion_id
+    1,             -- zona_id
+    'A tiempo',    -- status
+    'Llegó puntual'-- comentario
+);
