@@ -1,5 +1,5 @@
 CALL p_asistencias_crud(
     'DELETE',
-    3,
+    5,   -- id_asistencia a eliminar
     NULL, NULL, NULL, NULL, NULL, NULL
 );
