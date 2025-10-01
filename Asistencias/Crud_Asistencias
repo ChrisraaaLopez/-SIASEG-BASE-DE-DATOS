@@ -1,0 +1,79 @@
+
+DELIMITER $$
+
+CREATE PROCEDURE p_asistencias_crud(
+    IN p_accion VARCHAR(10),
+    IN p_id_asistencia INT,
+    IN p_empleado_id INT,
+    IN p_turno_id INT,
+    IN p_estacion_id INT,
+    IN p_zona_id INT,
+    IN p_status ENUM('A tiempo','Tarde','Falta'),
+    IN p_comentario TEXT
+)
+BEGIN
+    -- =====================================
+    -- Insertar
+    -- =====================================
+    IF p_accion = 'INSERT' THEN
+        INSERT INTO asistencias (
+            empleado_id, turno_id, estacion_id, zona_id,
+            status, comentario
+        ) VALUES (
+            p_empleado_id, p_turno_id, p_estacion_id, p_zona_id,
+            p_status, p_comentario
+        );
+
+    -- =====================================
+    -- Modificar
+    -- =====================================
+    ELSEIF p_accion = 'UPDATE' THEN
+        UPDATE asistencias
+        SET 
+            empleado_id = COALESCE(p_empleado_id, empleado_id),
+            turno_id = COALESCE(p_turno_id, turno_id),
+            estacion_id = COALESCE(p_estacion_id, estacion_id),
+            zona_id = COALESCE(p_zona_id, zona_id),
+            status = COALESCE(p_status, status),
+            comentario = COALESCE(p_comentario, comentario)
+        WHERE id_asistencia = p_id_asistencia;
+
+    -- =====================================
+    -- Borrar con el id
+    -- =====================================
+    ELSEIF p_accion = 'DELETE' THEN
+        DELETE FROM asistencias WHERE id_asistencia = p_id_asistencia;
+    END IF;
+END$$
+
+DELIMITER ;
+
+--Te paso los CALL jona para que los cales jajaja XOXO
+
+CALL p_asistencias_crud(
+    'INSERT',
+    NULL,          -- id_asistencia autoincrement
+    1,             -- empleado_id
+    2,             -- turno_id
+    3,             -- estacion_id
+    1,             -- zona_id
+    'A tiempo',    -- status
+    'Llegó puntual'-- comentario
+);
+
+CALL p_asistencias_crud(
+    'UPDATE',
+    3,             -- id de la asistencia que quieres modificar yo le puese 3 tu pon otro numerito JAJA
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    'Tarde',
+    'Se retrasó por tráfico'
+);
+
+CALL p_asistencias_crud(
+    'DELETE',
+    3,
+    NULL, NULL, NULL, NULL, NULL, NULL
+);
