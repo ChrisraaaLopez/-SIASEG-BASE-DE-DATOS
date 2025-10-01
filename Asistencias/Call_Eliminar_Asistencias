@@ -1,0 +1,5 @@
+CALL p_asistencias_crud(
+    'DELETE',
+    3,
+    NULL, NULL, NULL, NULL, NULL, NULL
+);
