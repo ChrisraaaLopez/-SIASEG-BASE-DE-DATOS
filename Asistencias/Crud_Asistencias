@@ -47,33 +47,3 @@ BEGIN
 END$$
 
 DELIMITER ;
-
---Te paso los CALL jona para que los cales jajaja XOXO
-
-CALL p_asistencias_crud(
-    'INSERT',
-    NULL,          -- id_asistencia autoincrement
-    1,             -- empleado_id
-    2,             -- turno_id
-    3,             -- estacion_id
-    1,             -- zona_id
-    'A tiempo',    -- status
-    'Llegó puntual'-- comentario
-);
-
-CALL p_asistencias_crud(
-    'UPDATE',
-    3,             -- id de la asistencia que quieres modificar yo le puese 3 tu pon otro numerito JAJA
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    'Tarde',
-    'Se retrasó por tráfico'
-);
-
-CALL p_asistencias_crud(
-    'DELETE',
-    3,
-    NULL, NULL, NULL, NULL, NULL, NULL
-);
