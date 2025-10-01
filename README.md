@@ -118,3 +118,108 @@ Incluye:
 2. (Insertar datos de prueba)  
 3. (Crear procedures y vistas)  
 4. (Conectar desde la app web con el usuario correspondiente)  
+
+# 📌 Descripción de Tablas de la Base de Datos `siaseg_bd`
+---
+## 🔹 Tabla **Roles**
+
+**Para qué sirve:**  
+- Almacena los distintos **roles o perfiles de usuario** dentro del sistema (ejemplo: Administrador, Supervisor, Empleado).  
+- Permite asignar funciones y niveles de acceso diferenciados.  
+- Se relaciona con la tabla **Empleados** para definir qué rol tiene cada uno.  
+
+**Campos principales:**  
+- `id_rol`: Identificador único del rol.  
+- `nombre_rol`: Nombre del rol.  
+- `descripcion`: Detalles adicionales del rol.  
+- `fecha_creacion` y `fecha_actualizacion`: Control de cambios.  
+- `status`: Estado del rol (`Activo` o `Inactivo`).  
+
+---
+
+## 🔹 Tabla **Empleados**
+
+**Para qué sirve:**  
+- Registra los **datos personales, laborales y de acceso** de cada trabajador.  
+- Controla la relación de cada empleado con un **rol asignado**.  
+- Se relaciona con **Roles**, **Asistencias** y **Logs**.  
+
+**Campos principales:**  
+- `id_empleado`: Identificador único del empleado.  
+- `nombres`, `apellidos`: Información personal.  
+- `CURP`, `RFC`: Datos oficiales únicos.  
+- `telefono`, `fotografia`: Datos de contacto e identificación.  
+- `username`, `password`: Credenciales de acceso.  
+- `rol_id`: Relación con la tabla **Roles**.  
+- `fecha_ingreso`: Día en que se incorporó.  
+- `fecha_creacion` y `fecha_actualizacion`: Control de cambios.  
+- `status`: Estado del empleado (`Activo` o `Inactivo`).  
+
+---
+
+## 🔹 Tabla **Estaciones y Zonas de Trabajo**
+
+**Para qué sirve:**  
+- Define los **lugares físicos o zonas geográficas** donde se registran asistencias.  
+- Permite manejar tanto estaciones individuales como zonas más amplias.  
+- Se relaciona con la tabla **Asistencias**.  
+
+**Campos principales:**  
+- `id_estacion`: Identificador único.  
+- `nombre_estacion`, `codigo_estacion`: Identificación de la estación/zona.  
+- `lat_sup_izq`, `lon_sup_izq`, `lat_inf_der`, `lon_inf_der`: Coordenadas que delimitan el área.  
+- `tipo`: Puede ser `Estacion` o `Zona`.  
+- `descripcion`: Información adicional.  
+- `fecha_creacion`, `fecha_actualizacion`, `status`: Control de cambios y estado.  
+
+---
+
+## 🔹 Tabla **Turnos**
+
+**Para qué sirve:**  
+- Define los **horarios de trabajo**.  
+- Permite controlar entradas, salidas y tolerancia de retraso.  
+- Se relaciona con la tabla **Asistencias**.  
+
+**Campos principales:**  
+- `id_turno`: Identificador único.  
+- `nombre_turno`: Nombre del turno (ejemplo: Matutino, Vespertino).  
+- `hora_entrada`, `hora_salida`: Horarios asignados.  
+- `tolerancia_minutos`: Tiempo permitido de retraso.  
+- `fecha_creacion`, `fecha_actualizacion`, `status`: Control de cambios y estado.  
+
+---
+
+## 🔹 Tabla **Asistencias**
+
+**Para qué sirve:**  
+- Registra la **asistencia de los empleados**.  
+- Vincula a un empleado con un turno y una estación/zona.  
+- Se usa para generar reportes de puntualidad y control de personal.  
+
+**Campos principales:**  
+- `id_asistencia`: Identificador único.  
+- `empleado_id`: Relación con la tabla **Empleados**.  
+- `turno_id`: Relación con la tabla **Turnos**.  
+- `estacion_id`, `zona_id`: Relación con **Estaciones/Zonas**.  
+- `fecha_registro`: Día y hora de registro.  
+- `status`: Estado de asistencia (`A tiempo`, `Tarde`, `Falta`).  
+- `comentario`: Observaciones adicionales.  
+- `fecha_actualizacion`: Control de cambios.  
+
+---
+
+## 🔹 Tabla **Logs**
+
+**Para qué sirve:**  
+- Registra el **historial de acciones realizadas por los empleados en el sistema**.  
+- Permite trazabilidad y auditoría.  
+- Se relaciona con la tabla **Empleados**.  
+
+**Campos principales:**  
+- `id_log`: Identificador único.  
+- `empleado_id`: Relación con el empleado que realizó la acción.  
+- `accion`: Nombre de la acción realizada.  
+- `fecha_accion`: Momento en que se ejecutó.  
+- `descripcion`: Detalles adicionales de la acción.  
+- `fecha_creacion`, `fecha_actualizacion`: Control de cambios.  
