@@ -1,1 +1,1 @@
-
+CALL p_asistencias_crud('RESTORE',5, NULL, NULL, NULL, NULL, NULL, NULL);
