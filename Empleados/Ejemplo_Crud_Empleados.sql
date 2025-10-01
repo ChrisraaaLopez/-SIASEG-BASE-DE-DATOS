@@ -18,7 +18,7 @@ CALL p_empleados_crud(
 );
 
 -- =====================================
--- Ejemplo UPDATE
+-- Ejemplo DELETE
 -- =====================================
 CALL p_empleados_crud(
     'UPDATE',
@@ -46,3 +46,4 @@ CALL p_empleados_crud(
     'JUAP800101HDFRRN09', 
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL
 );
+
