@@ -223,3 +223,110 @@ Incluye:
 - `fecha_accion`: Momento en que se ejecutó.  
 - `descripcion`: Detalles adicionales de la acción.  
 - `fecha_creacion`, `fecha_actualizacion`: Control de cambios.  
+---
+# ⚙ Procedimientos Almacenados - CRUD Empleados
+
+En la base de datos `siaseg_bd` se implementa un *proceimiento almacenado* que permite realizar las operaciones basicas de gestion de empleados: *INSERTAR, ACTUALIZAR y ELIMINAR(baja logica)* Ademas, se incluye un procedimiento extra para *reactivar empleados inactivos*
+---
+## 🔹 Procedimiento p_empleados_crud
+
+**¿Para que sirve?**
+Este procedimiento permite manejar los registros de la tabla `empleados` mediante una sola funcion que recibe como parametro la accion a realizar (`INSERT`, `UPDATE`, `DELETE`).
+
+### 🔑 Parámetros principales
+- `p_accion`: Define la operación a ejecutar (`INSERT`, `UPDATE`, `DELETE`).  
+- `p_id_empleado`: Se usa solo en **INSERT** (opcional). Para UPDATE y DELETE se identifica al empleado por `CURP`.  
+- `p_nombres`, `p_apellidos`: Datos personales.  
+- `p_CURP`, `p_RFC`: Identificadores únicos oficiales.  
+- `p_telefono`, `p_fotografia`: Datos adicionales.  
+- `p_username`, `p_password`: Credenciales de acceso.  
+- `p_nombre_rol`: Se pasa el **nombre del rol** en lugar del ID; el procedimiento busca el ID correspondiente en la tabla `roles`.  
+- `p_fecha_ingreso`: Fecha de incorporación.  
+- `p_status`: Estado del empleado (`Activo`, `Inactivo`).  
+
+---
+
+### 📥 Operaciones que realiza
+1.*INSERT*
+- Inserta un nuevo empleado en la tabla.
+- Retorna el ìd_insertado`.
+2.*UPDATE*
+  - Actualiza los datos de un empleado existente, identificado por CURP.
+  -  Solo modifica los campos que se envien con valores (usa `COALESCE`).
+  -  Retorna el numero de `filas_afectadas`.
+  3.*DELETE (Baja lógica)*
+     - No elimina fisicamente al empleado.
+     - Cambia el campo `status` a `Inactivo`.
+     - Retorna el numero de `filas_afectadas`.
+    ---
+  ###  📝 Ejemplos de uso
+#### ➕ Insertar empleado
+```sql
+CALL p_empleados_crud(
+    'INSERT',
+    NULL,               
+    'Juan',             
+    'Pérez López',      
+    'JUAP800101HDFRRN09', 
+    'JUAP800101XXX',    
+    '555-1234',         
+    'foto_juan.png',    
+    'juanp',            
+    'hashedPass123',    
+    'Administrador',    
+    '2025-09-01',       
+    'Activo'            
+);
+```
+#### ✏️ Actualizar empleado
+```sql
+CALL p_empleados_crud(
+    'UPDATE',
+    NULL,
+    NULL,
+    NULL,
+    'JUAP800101HDFRRN09', -- CURP para identificar al empleado
+    NULL,
+    '555-9999',           -- nuevo teléfono
+    NULL,
+    NULL,
+    NULL,
+    'Supervisor',         -- nuevo rol
+    NULL,
+    NULL
+);
+```
+#### ❌ Eliminar empleado (baja lógica)
+```sql
+CALL p_empleados_crud(
+    'DELETE',
+    NULL,                   
+    NULL, NULL, 
+    'JUAP800101HDFRRN09', 
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL
+);
+```
+## 🔹 Procedimiento p_reactivar_empleado
+**¿Para qué sirve?**
+
+Permite restaurar empleados inactivos, cambiando su estado de `Inactivo` a `Activo`.
+Se usa principalmente cuando se quiere reincorporar a un trabajador dado de baja lógica.
+
+## 🔹 Procedimiento `p_reactivar_empleado`
+
+**¿Para qué sirve?**  
+Permite restaurar empleados **inactivos**, cambiando su estado de `Inactivo` a `Activo`.  
+Se usa principalmente cuando se quiere reincorporar a un trabajador dado de baja lógica.
+
+---
+
+### 🔑 Parámetros
+
+- `p_CURP`: CURP del empleado a reactivar.  
+
+---
+
+### 📝 Ejemplo de uso
+```sql
+CALL p_reactivar_empleado('JUAP800101HDFRRN09');
+```
