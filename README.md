@@ -226,7 +226,7 @@ Incluye:
 ---
 # ⚙ Procedimientos Almacenados - CRUD Empleados
 
-En la base de datos `siaseg_bd` se implementa un *proceimiento almacenado* que permite realizar las operaciones basicas de gestion de empleados: *INSERTAR, ACTUALIZAR y ELIMINAR(baja logica)* Ademas, se incluye un procedimiento extra para *reactivar empleados inactivos*
+En la base de datos `siaseg_bd` se implementa un *procedimiento almacenado* que permite realizar las operaciones basicas de gestion de empleados: *INSERTAR, ACTUALIZAR y ELIMINAR(baja logica)* Ademas, se incluye un procedimiento extra para *reactivar empleados inactivos*
 ---
 ## 🔹 Procedimiento p_empleados_crud
 
