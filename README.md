@@ -636,3 +636,135 @@ CALL p_asistencias_crud(
 ```
 
 ---
+# 📌 Procedimiento Almacenado - CRUD Logs  
+
+En la base de datos se implementa un **CRUD para la tabla `logs`**, que permite **insertar, actualizar y eliminar registros** de manera centralizada.  
+Este procedimiento es útil para administrar las bitácoras de acciones realizadas por los empleados.  
+
+---
+
+## 🔹 Procedimiento `p_logs_crud`
+
+**¿Para qué sirve?**  
+Permite manejar los registros de la tabla `logs` con operaciones básicas: **INSERT, UPDATE y DELETE**.  
+
+---
+
+### 🔑 Parámetros
+
+- `p_accion` (VARCHAR(10)): Define la operación a realizar. Valores: `'INSERT'`, `'UPDATE'`, `'DELETE'`.  
+- `p_id_log` (INT): ID del log (usado en `UPDATE` y `DELETE`).  
+- `p_empleado_id` (INT): Identificador del empleado relacionado con la acción.  
+- `p_accion_log` (VARCHAR(80)): Tipo o nombre de la acción realizada.  
+- `p_descripcion` (TEXT): Detalle o descripción de la acción.  
+- `p_status` (VARCHAR(10)): Parámetro opcional (no usado en este CRUD porque los logs se eliminan físicamente).  
+
+---
+
+### 🧠 Comportamiento por operación
+
+#### ➕ INSERT  
+Inserta un nuevo registro en la tabla `logs`.  
+
+```sql
+CALL p_logs_crud(
+    'INSERT',
+    NULL,
+    101,                     -- empleado_id
+    'Inicio de sesión',      -- accion_log
+    'El usuario accedió al sistema', 
+    NULL
+);
+```
+
+---
+
+#### ✏️ UPDATE  
+Actualiza un registro existente.  
+Si algún parámetro llega como `NULL`, conserva el valor actual (gracias a `COALESCE`).  
+
+```sql
+CALL p_logs_crud(
+    'UPDATE',
+    5,                       -- id_log
+    NULL,                    -- empleado_id (no cambia)
+    'Actualización perfil',  -- accion_log
+    'El usuario modificó sus datos',
+    NULL
+);
+```
+
+---
+
+#### ❌ DELETE  
+Elimina físicamente un log (no es baja lógica, ya que los registros no tienen `status`).  
+
+```sql
+CALL p_logs_crud(
+    'DELETE',
+    5,    -- id_log
+    NULL,
+    NULL,
+    NULL,
+    NULL
+);
+```
+
+---
+
+## 🧾 Código completo del procedimiento
+
+```sql
+DELIMITER $$
+
+CREATE PROCEDURE p_logs_crud (
+    IN p_accion VARCHAR(10),
+    IN p_id_log INT,
+    IN p_empleado_id INT,
+    IN p_accion_log VARCHAR(80),
+    IN p_descripcion TEXT,
+    IN p_status VARCHAR(10) -- opcional 
+)
+BEGIN
+    DECLARE v_id_log INT;
+
+    -- Resolver id del log a partir del id_log (para UPDATE/DELETE)
+    IF p_id_log IS NOT NULL AND p_accion IN ('UPDATE','DELETE') THEN
+        SELECT id_log INTO v_id_log
+        FROM logs
+        WHERE id_log = p_id_log
+        LIMIT 1;
+    END IF;
+
+    -- INSERTAR LOG
+    IF p_accion = 'INSERT' THEN
+        INSERT INTO logs (
+            empleado_id, accion, descripcion
+        ) VALUES (
+            p_empleado_id, p_accion_log, p_descripcion
+        );
+
+        SELECT LAST_INSERT_ID() AS id_insertado;
+
+    -- ACTUALIZAR LOG
+    ELSEIF p_accion = 'UPDATE' THEN
+        UPDATE logs
+        SET 
+            empleado_id = COALESCE(p_empleado_id, empleado_id),
+            accion      = COALESCE(p_accion_log, accion),
+            descripcion = COALESCE(p_descripcion, descripcion)
+        WHERE id_log = v_id_log;
+
+        SELECT ROW_COUNT() AS filas_afectadas;
+
+    -- ELIMINAR LOG (borrado físico, ya que no hay status en la tabla)
+    ELSEIF p_accion = 'DELETE' THEN
+        DELETE FROM logs
+        WHERE id_log = v_id_log;
+
+        SELECT ROW_COUNT() AS filas_afectadas;
+    END IF;
+END$$
+
+DELIMITER ;
+```
