@@ -332,3 +332,184 @@ Se usa principalmente cuando se quiere reincorporar a un trabajador dado de baja
 ```sql
 CALL p_reactivar_empleado('JUAP800101HDFRRN09');
 ```
+# ⚙ Procedimientos Almacenados - CRUD Roles
+
+En la base de datos `siaseg_bd` se implementa un **procedimiento almacenado** que permite realizar la gestión completa de los **roles** del sistema: **crear, leer, buscar, actualizar, eliminar lógicamente, reactivar** y **verificar empleados asociados**.  
+
+---
+
+## 🔹 Procedimiento `sp_crud_roles`
+
+**¿Para qué sirve?**  
+Este procedimiento centraliza todas las operaciones CRUD y consultas relacionadas con la tabla `roles` en una sola rutina.  
+Permite: crear roles, listar roles (todos o filtrados), buscar por ID o por nombre parcial, actualizar, dar baja lógica (cambiar a `Inactivo`), reactivar e inspeccionar empleados asignados a un rol.
+
+---
+
+### 🔑 Parámetros
+
+- `p_operacion` (ENUM): Operación a ejecutar. Valores permitidos:  
+  `'CREATE'`, `'READ'`, `'READ_BY_ID'`, `'READ_BY_STATUS'`, `'SEARCH'`, `'UPDATE'`, `'DELETE'`, `'REACTIVAR'`, `'CHECK_EMPLOYEES'`.  
+- `p_id_rol` (INT): ID del rol (usado por READ_BY_ID, UPDATE, DELETE, REACTIVAR, CHECK_EMPLOYEES).  
+- `p_nombre_rol` (VARCHAR(50)): Nombre del rol (para CREATE y UPDATE; validado para duplicados en roles activos).  
+- `p_descripcion` (TEXT): Descripción del rol.  
+- `p_status` (ENUM('Activo','Inactivo')): Estado del rol (usado en CREATE, UPDATE y READ_BY_STATUS).  
+- `p_busqueda` (VARCHAR(50)): Texto para búsquedas parciales en `nombre_rol` (usado en SEARCH).
+
+---
+
+### 🧠 Validaciones y comportamiento general
+
+- CREATE:
+  - Verifica si ya existe un rol **Activo** con el mismo `nombre_rol`.  
+  - Si existe, lanza un `SIGNAL` con SQLSTATE `'45000'` y mensaje de error.  
+  - Si no existe, inserta el rol y devuelve un mensaje con `LAST_INSERT_ID()`.
+- READ:
+  - Devuelve todos los roles ordenados por `status` (desc) y `nombre_rol`.
+- READ_BY_ID:
+  - Devuelve el rol correspondiente a `p_id_rol`.  
+  - Si no se encuentra, retorna un mensaje simple `'Rol no encontrado'`.
+- READ_BY_STATUS:
+  - Devuelve roles filtrados por `p_status`.
+- SEARCH:
+  - Busca roles cuyo `nombre_rol` contenga `p_busqueda` (LIKE `%p_busqueda%`).
+- UPDATE:
+  - Verifica existencia por `id_rol`. Si no existe, lanza `SIGNAL`.  
+  - Verifica que no exista otro rol **Activo** con el mismo `nombre_rol` (excluyendo al rol que se actualiza). Si existe, lanza `SIGNAL`.  
+  - Si pasa validaciones, actualiza campos y `fecha_actualizacion = CURRENT_TIMESTAMP`.
+- DELETE (baja lógica):
+  - Verifica existencia del rol.  
+  - Verifica si hay empleados `Activo` asignados (`empleados.rol_id = p_id_rol`). Si hay empleados activos asociados, lanza `SIGNAL` y no permite la baja.  
+  - Si no hay empleados activos, actualiza `status = 'Inactivo'` y `fecha_actualizacion`.
+- REACTIVAR:
+  - Verifica existencia del rol y cambia `status = 'Activo'` y actualiza `fecha_actualizacion`.
+- CHECK_EMPLOYEES:
+  - Devuelve la lista de empleados asociados al rol (incluye `id_empleado`, nombre completo, `username`, `CURP`, `fecha_ingreso`, `status`).  
+  - Si no hay resultados devuelve un mensaje `'No hay empleados asignados a este rol'`.
+- Para errores (operación inválida o validaciones fallidas) el procedimiento usa `SIGNAL SQLSTATE '45000'` con mensajes claros.
+
+---
+
+### 📋 Resumen por operación
+
+- `CREATE` → Inserta un rol si no existe otro activo con el mismo nombre.  
+- `READ` → Lista todos los roles.  
+- `READ_BY_ID` → Muestra un rol por ID.  
+- `READ_BY_STATUS` → Lista roles por estado.  
+- `SEARCH` → Busca roles por nombre parcial.  
+- `UPDATE` → Actualiza rol con validación de existencia y duplicados.  
+- `DELETE` → Baja lógica (marca `Inactivo`) si no está asignado a empleados activos.  
+- `REACTIVAR` → Marca `Activo` un rol `Inactivo`.  
+- `CHECK_EMPLOYEES` → Lista empleados asignados al rol.
+
+---
+
+### 📝 Ejemplos de uso (todos como bloques SQL)
+
+#### ➕ Crear rol
+```sql
+CALL sp_crud_roles(
+    'CREATE',
+    NULL,
+    'Supervisor',
+    'Rol encargado de supervisar empleados',
+    'Activo',
+    NULL
+);
+```
+
+#### 📖 Leer todos los roles
+```sql
+CALL sp_crud_roles(
+    'READ',
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+);
+```
+
+#### 🔍 Buscar rol por ID
+```sql
+CALL sp_crud_roles(
+    'READ_BY_ID',
+    3,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+);
+```
+
+#### 🔎 Listar roles por estado (Activos)
+```sql
+CALL sp_crud_roles(
+    'READ_BY_STATUS',
+    NULL,
+    NULL,
+    NULL,
+    'Activo',
+    NULL
+);
+```
+
+#### 🧾 Buscar por nombre parcial
+```sql
+CALL sp_crud_roles(
+    'SEARCH',
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    'admin'
+);
+```
+
+#### ✏️ Actualizar rol
+```sql
+CALL sp_crud_roles(
+    'UPDATE',
+    2,
+    'Administrador',
+    'Rol con privilegios totales',
+    'Activo',
+    NULL
+);
+```
+
+#### ❌ Eliminar rol (baja lógica)
+```sql
+CALL sp_crud_roles(
+    'DELETE',
+    4,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+);
+```
+
+#### 🔄 Reactivar rol
+```sql
+CALL sp_crud_roles(
+    'REACTIVAR',
+    4,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+);
+```
+
+#### 👥 Ver empleados asignados a un rol
+```sql
+CALL sp_crud_roles(
+    'CHECK_EMPLOYEES',
+    2,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+);
+```
