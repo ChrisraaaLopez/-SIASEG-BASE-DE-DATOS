@@ -513,3 +513,126 @@ CALL sp_crud_roles(
     NULL
 );
 ```
+# 📌 Procedimiento Almacenado - CRUD Asistencias  
+
+En la base de datos se implementa un **CRUD para asistencias** que permite insertar, modificar, eliminar con respaldo y restaurar registros de la tabla `asistencias`.  
+Este CRUD utiliza también una tabla de respaldo llamada `asistencias_backup` para conservar un historial de registros eliminados.  
+
+---
+
+## 🔹 Tabla de respaldo: `asistencias_backup`
+
+```sql
+CREATE TABLE IF NOT EXISTS asistencias_backup (
+    id_asistencia INT,
+    empleado_id INT,
+    turno_id INT,
+    estacion_id INT,
+    zona_id INT,
+    fecha_registro DATETIME,
+    status ENUM('A tiempo','Tarde','Falta'),
+    comentario TEXT,
+    fecha_actualizacion DATETIME
+);
+```
+
+- Guarda los registros eliminados de la tabla `asistencias`.  
+- Permite que se puedan **restaurar** más adelante en caso de eliminación accidental.  
+- Contiene los mismos campos que la tabla original.  
+
+---
+
+## 🔹 Procedimiento `p_asistencias_crud`
+
+**¿Para qué sirve?**  
+Centraliza todas las operaciones de **insertar, actualizar, borrar con respaldo y restaurar** en una sola rutina.  
+
+---
+
+### 🔑 Parámetros
+
+- `p_accion` (VARCHAR(15)): Define la operación a realizar. Valores: `'INSERT'`, `'UPDATE'`, `'DELETE'`, `'RESTORE'`.  
+- `p_id_asistencia` (INT): ID de la asistencia (usado en UPDATE, DELETE y RESTORE).  
+- `p_empleado_id` (INT): ID del empleado.  
+- `p_turno_id` (INT): ID del turno.  
+- `p_estacion_id` (INT): ID de la estación.  
+- `p_zona_id` (INT): ID de la zona.  
+- `p_status` (ENUM): Estado de la asistencia (`'A tiempo'`, `'Tarde'`, `'Falta'`).  
+- `p_comentario` (TEXT): Observaciones sobre la asistencia.  
+
+---
+
+### 🧠 Comportamiento por operación
+
+#### ➕ INSERT  
+Inserta un nuevo registro en la tabla `asistencias`.  
+
+```sql
+CALL p_asistencias_crud(
+    'INSERT',
+    NULL,
+    101,  -- empleado_id
+    2,    -- turno_id
+    1,    -- estacion_id
+    3,    -- zona_id
+    'A tiempo',
+    'Llegó puntual'
+);
+```
+
+---
+
+#### ✏️ UPDATE  
+Actualiza los campos de una asistencia existente.  
+Se usa `COALESCE()` para que si un parámetro llega como `NULL`, conserve el valor actual.  
+
+```sql
+CALL p_asistencias_crud(
+    'UPDATE',
+    5,    -- id_asistencia
+    NULL, -- empleado_id (no cambia)
+    3,    -- turno_id
+    NULL, -- estacion_id
+    NULL, -- zona_id
+    'Tarde',
+    'Se retrasó por tráfico'
+);
+```
+
+---
+
+#### ❌ DELETE (con respaldo)  
+Antes de borrar el registro, lo guarda en la tabla `asistencias_backup`.  
+
+```sql
+CALL p_asistencias_crud(
+    'DELETE',
+    7,    -- id_asistencia a eliminar
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+);
+```
+
+---
+
+#### 🔄 RESTORE  
+Permite recuperar un registro eliminado desde `asistencias_backup`.  
+
+```sql
+CALL p_asistencias_crud(
+    'RESTORE',
+    7,    -- id_asistencia a restaurar
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+);
+```
+
+---
